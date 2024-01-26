@@ -2,13 +2,28 @@ import express from 'express';
 import dotenv from 'dotenv';
 import createHttpError from 'http-errors';
 import AuthRouter from './Router/Auth.route.js';
+import cors from 'cors';
+import connectDB from './Config/db.config.js';
+
 dotenv.config();
 const app = express();
 
+const PORT = process.env.PORT;
+const DATABASE_URL = process.env.DATABASE_URL;
+
+//CORS POLICY
+app.use(cors());
+
+//DATABASE CONNECTION
+connectDB(DATABASE_URL);
+
+//AUTH ROUTES
 app.use('/auth', AuthRouter)
+
+//NOT FOUND ROUTES
 app.use((req, resp, next)=>{
     next(createHttpError.NotFound());
-})
+});
 
 //ERROR HANDLER
 app.use((err, req, resp, next)=>{
@@ -21,4 +36,4 @@ resp.send({
 })
 })
 
-app.listen(process.env.PORT, () => console.log(`Server is running at ${process.env.PORT}`))
+app.listen(PORT, () => console.log(`Server is running at ${PORT}`))
