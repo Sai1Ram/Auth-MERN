@@ -5,6 +5,7 @@ import AuthRouter from "./Router/Auth.route.js";
 import cors from "cors";
 import connectDB from "./Config/db.config.js";
 import { verifyAccessToken } from "./helper/jwtToken.js";
+// import client from "./Config/redis.config.js";
 
 dotenv.config();
 const app = express();
@@ -25,8 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/auth", AuthRouter);
 
 //PROTECTED ROUTES
-app.use(verifyAccessToken);
-app.get("/", (req, resp, next) => {
+// app.use(verifyAccessToken);
+app.get("/", verifyAccessToken, (req, resp, next) => {
   console.log(req.payload);
 });
 
