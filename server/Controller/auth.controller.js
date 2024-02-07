@@ -65,7 +65,7 @@ const refreshToken = async (req, resp, next) => {
       await User.updateOne({ _id: userId }, { refreshToken: refToken });
       resp.send({ accessToken, refreshToken: refToken });
     }else{
-      createHttpError.Unauthorized();
+      throw createHttpError.Unauthorized();
       
     }
   } catch (error) {
@@ -79,8 +79,11 @@ const logout = async (req, resp, next) => {
     const user = await User.findOne({ _id: userId });
     if(user.refreshToken === refreshToken){
     await User.updateOne({ _id: userId }, { refreshToken: "" });
-    }
     resp.send({ message:"Logout" });
+    }
+    else{
+      throw createHttpError.Unauthorized();
+    }
     // client.DEL(userId, (err, val) => {
     //   if (err) {
     //     console.log(err.message)
